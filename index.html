@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>チャットテスト</title>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+  <script defer src="/__/firebase/5.5.1/firebase-app.js"></script>
+  <script defer src="/__/firebase/5.5.1/firebase-auth.js"></script>
+  <script defer src="/__/firebase/5.5.1/firebase-database.js"></script>
+  <script defer src="/__/firebase/5.5.1/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/5.5.1/firebase-storage.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBCinhYSkcpJNp4AMn-J008VBjm9NUCf-w",
+      authDomain: "webchatdemo-2cba8.firebaseapp.com",
+      databaseURL: "https://webchatdemo-2cba8.firebaseio.com",
+      projectId: "webchatdemo-2cba8",
+      storageBucket: "webchatdemo-2cba8.appspot.com",
+      messagingSenderId: "1061836361113"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <div id='messagesDiv'></div>
+  <input type='text' id='nameInput' placeholder='Name'>
+  <input type='text' id='messageInput' placeholder='Message...'>
+  <script type='text/javascript'>
+    var messagesRef = firebase.database().ref('/');
+
+    $('#messageInput').keypress(function (e) {
+      if (e.keyCode == 13) {
+        var name = $('#nameInput').val();
+        var text = $('#messageInput').val();
+        messagesRef.push({ name: name, text: text });
+        $('#messageInput').val('');
+      }
+    });
+
+    messagesRef.on('child_added', function (snapshot) {
+      var message = snapshot.val();
+      console.log(message.name);
+      if (message.name) {
+        $('<div/>').text(message.text).prepend($('<em/>').text(message.name + ': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+      }
+    });
+  </script>
+</body>
+
+</html>
